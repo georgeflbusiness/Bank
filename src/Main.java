@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -34,7 +33,7 @@ public class Main {
                     System.out.print("Ποσό ανάληψης: ");
                     int requestamount = input.nextInt();
                     ALPHA.Transferto(Giorgos, requestamount);
-                    message = "Επιτυχής ανάληψη " + requestamount + "$";
+                    message = "Επιτυχής ανάληψη! " + requestamount + "$";
                     break;
                 case 2:
                     System.out.print("Ποσό κατάθεσης: ");
