@@ -42,7 +42,7 @@ import java.util.Random;
         this.health = health;
     }
 
-    //LEVEUP POTION METHOD
+    //LEVEUP POTION METHOD!
     public void levelup() {
         if (wallet >= 200) {
             this.wallet -= 200;

@@ -22,7 +22,7 @@ public class Main {
 
             if (!message.isEmpty()) {
                 System.out.println(">>> " + message);
-                message = ""; // Καθαρίζουμε το μήνυμα για την επόμενη φορά
+                message = ""; // Καθαρίζουμε το μήνυμα για την επόμενη φορά!
             }
 
             System.out.print("Επιλογή: ");

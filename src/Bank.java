@@ -1,6 +1,8 @@
 public class Bank {
     int funds;
 
+
+    //CONSCTRUCTOR
     Bank(int funds) {
         this.funds = funds;
     }
