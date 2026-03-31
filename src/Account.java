@@ -30,18 +30,18 @@ class Account {
     }
 
 
-    public void HealthPotion() {
+    public int  HealthPotion() {
         Random randomhealth = new Random();
 
         if (balance >= 100) {
             balance -= 100;
             int extrahealth = randomhealth.nextInt(11) + 10;
             health += extrahealth;
-            System.out.println("Πήρες " + extrahealth + " ζωή");
+            return extrahealth;
         }
 
         else {
-            System.out.println("Δεν έχεις αρκετά χρήματα");
+            return -1;
 
         }
 
@@ -49,17 +49,17 @@ class Account {
 
 
     //BET METHOD
-    public void Bet() {
+    public int Bet() {
         Random randombet = new Random();
         if (this.balance > 100) {
             this.balance -= 100 ;
-            int betting = randombet.nextInt(100) + 20;
+            int betting = randombet.nextInt(181) + 20;
             this.balance += betting;
-            System.out.println("Κέρδισες" + betting + "$");
+            return betting; //επιστρεφει το ποσο
         }
 
         else {
-            System.out.println("Δεν έχεις αρκετα χρήματα");
+            return -1; //επιστρεφει -1 αν δεν εχει χρηματα
         }
 
     }

@@ -1,4 +1,3 @@
-import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -7,59 +6,94 @@ public class Main {
         boolean menu1 = true;
         boolean menu2 = false;
         Scanner input = new Scanner(System.in);
-        Scanner input2 = new Scanner(System.in);
-        Random rand = new Random();
+
         Bank ALPHA = new Bank(10000);
         Account Giorgos = new Account();
+        String message = "";
         Giorgos.setHealth(50);
 
         while (menu1) {
-            System.out.println("=====MENU=====");
-            System.out.println("ΤΡΑΠΕΖΑ " + ALPHA.funds + "$" + " -- " + "ΛΟΓΑΡΙΑΣΜΟΣ " + Giorgos.balance + "$" + " -- " + "Health " + Giorgos.getHealth());
-            System.out.println("1.Ανάληψη(+ fees)");
-            System.out.println("2.Κατάθεση");
-            System.out.println("3.Shop");
-            System.out.println("4.Bet(100$) and win up to 200$");
-            System.out.println("5.ΕΞΟΔΟΣ");
-            int choice = input.nextInt();
+            System.out.println("\n===== MENU =====");
+            System.out.println("ΤΡΑΠΕΖΑ: " + ALPHA.funds + "$ | ΛΟΓΑΡΙΑΣΜΟΣ: " + Giorgos.balance + "$ | HP: " + Giorgos.getHealth());
+            System.out.println("1. Ανάληψη (+ fees)");
+            System.out.println("2. Κατάθεση");
+            System.out.println("3. Shop");
+            System.out.println("4. Bet (100$)");
+            System.out.println("5. ΕΞΟΔΟΣ");
 
-            if (choice == 1) {
-                System.out.print("Επέλεξε ποσό μεταφοράς ");
-                int requestamount = input.nextInt();
-                ALPHA.Transferto(Giorgos, requestamount);
-            } else if (choice == 2) {
-                System.out.print("Επέλεξε ποσό μεταφοράς ");
-                int depositamount3 = input.nextInt();
-                Giorgos.Deposit(ALPHA, depositamount3);
-            } else if (choice == 3) {
-                menu1 = false;
-                menu2 = true;
-            } else if (choice == 4) {
-                Giorgos.Bet();
-            } else if (choice == 5) {
-                menu1 = false;
-            } else {
-                System.out.println("ΜΗ ΕΓΚΥΡΗ ΕΠΙΛΟΓΗ");
+            if (!message.isEmpty()) {
+                System.out.println(">>> " + message);
+                message = ""; // Καθαρίζουμε το μήνυμα για την επόμενη φορά
             }
 
-            while (menu2) {
-                System.out.println("=====SHOP=====");
-                System.out.println("ΤΡΑΠΕΖΑ " + ALPHA.funds + "$" + " -- " + "ΛΟΓΑΡΙΑΣΜΟΣ " + Giorgos.balance + "$" + " -- " + "Health " + Giorgos.getHealth());
-                System.out.println("1.Health Potion(100$)");
-                System.out.println("5.Επιστροφή");
-                int choice2 = input2.nextInt();
+            System.out.print("Επιλογή: ");
+            int choice = input.nextInt();
 
-                if (choice2 == 1) {
-                    Giorgos.HealthPotion();
-                } else if (choice2 == 5) {
-                    menu2 = false;
-                    menu1 = true;
+            switch (choice) {
+                case 1:
+                    System.out.print("Ποσό ανάληψης: ");
+                    int requestamount = input.nextInt();
+                    ALPHA.Transferto(Giorgos, requestamount);
+                    message = "Επιτυχής ανάληψη " + requestamount + "$";
+                    break;
+                case 2:
+                    System.out.print("Ποσό κατάθεσης: ");
+                    int depositamount3 = input.nextInt();
+                    Giorgos.Deposit(ALPHA, depositamount3);
+                    message = "Επιτυχής κατάθεση " + depositamount3 + "$";
+                    break;
+                case 3:
+                    menu2 = true; // Ενεργοποιούμε το Shop
+                    // Βγαίνουμε από το switch για να πάμε στο while(menu2) παρακάτω
+                    break;
+                case 4:
+                    int winamount = Giorgos.Bet();
+                    if (winamount != -1) {
+                        message = "Κέρδισες " + winamount + "$";
+                    } else {
+                        message = "Δεν έχεις αρκετά χρήματα!";
+                    }
+                    break;
+                case 5:
+                    menu1 = false;
+                    System.out.println("Αντίο!");
+                    break;
+                default:
+                    message = "ΜΗ ΕΓΚΥΡΗ ΕΠΙΛΟΓΗ";
+                    break;
+            }
+
+            // --- ΕΔΩ ΕΙΝΑΙ ΤΟ SHOP (Έξω από το switch, μέσα στο menu1) ---
+            while (menu2) {
+                System.out.println("\n===== SHOP =====");
+                System.out.println("HP: " + Giorgos.getHealth() + " | Υπόλοιπο: " + Giorgos.balance + "$");
+                System.out.println("1. Health Potion (100$)");
+                System.out.println("2. Επιστροφή");
+
+                if (!message.isEmpty()) {
+                    System.out.println(">>> " + message);
+                    message = "";
                 }
 
+                System.out.print("Επιλογή Shop: ");
+                int choice2 = input.nextInt();
+
+                switch (choice2) {
+                    case 1:
+                        int healing = Giorgos.HealthPotion();
+                        if (healing != -1) {
+                            message = "Αγόρασες Health Potion! Πήρες " + healing + " HP";
+                        } else {
+                            message = "Δεν έχεις αρκετά χρήματα!";
+                        }
+                        break;
+                    case 2:
+                        menu2 = false;
+                        break;
+                    default:
+                        message = "Μη έγκυρη επιλογή στο Shop";
+                }
             }
         }
     }
-
 }
-
-
