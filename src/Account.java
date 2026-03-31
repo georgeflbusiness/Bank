@@ -52,7 +52,7 @@ class Account {
     public void Bet() {
         Random randombet = new Random();
         if (this.balance > 100) {
-            this.balance -= 100;
+            this.balance -= 110 ;
             int betting = randombet.nextInt(100) + 20;
             this.balance += betting;
             System.out.println("Κέρδισες" + betting + "$");
