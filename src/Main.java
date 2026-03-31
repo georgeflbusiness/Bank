@@ -2,8 +2,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        boolean menu1 = true;
-        boolean menu2 = false;
+        boolean start_menu = true;
+        boolean shop_menu = false;
         Scanner input = new Scanner(System.in);
 
         Bank ALPHA = new Bank(10000);
@@ -11,9 +11,9 @@ public class Main {
         String message = "";
         Giorgos.setHealth(50);
 
-        while (menu1) {
+        while (start_menu) {
             System.out.println("\n===== MENU =====");
-            System.out.println("ΤΡΑΠΕΖΑ: " + ALPHA.funds + "$ | ΛΟΓΑΡΙΑΣΜΟΣ: " + Giorgos.balance + "$ | HP: " + Giorgos.getHealth());
+            System.out.println("ΤΡΑΠΕΖΑ: " + ALPHA.funds + "$ | ΛΟΓΑΡΙΑΣΜΟΣ: " + Giorgos.wallet + "$ | HP: " + Giorgos.getHealth() + " | Lvl: " + Giorgos.level + " | XP: " + Giorgos.xp + " / 100 " );
             System.out.println("1. Ανάληψη (+ fees)");
             System.out.println("2. Κατάθεση");
             System.out.println("3. Shop");
@@ -32,8 +32,13 @@ public class Main {
                 case 1:
                     System.out.print("Ποσό ανάληψης: ");
                     int requestamount = input.nextInt();
-                    ALPHA.Transferto(Giorgos, requestamount);
-                    message = "Επιτυχής ανάληψη! " + requestamount + "$";
+                    if (requestamount <= ALPHA.funds) {
+                        message = "Επιτυχής ανάληψη! " + requestamount + "$";
+                        ALPHA.Transferto(Giorgos, requestamount);
+                    }
+                    else {
+                        message = "Δεν έχεις αρκετά χρήματα στην τράπεζα";
+                    }
                     break;
                 case 2:
                     System.out.print("Ποσό κατάθεσης: ");
@@ -42,19 +47,22 @@ public class Main {
                     message = "Επιτυχής κατάθεση " + depositamount3 + "$";
                     break;
                 case 3:
-                    menu2 = true; // Ενεργοποιούμε το Shop
+                    shop_menu = true; // Ενεργοποιούμε το Shop
                     // Βγαίνουμε από το switch για να πάμε στο while(menu2) παρακάτω
                     break;
                 case 4:
                     int winamount = Giorgos.Bet();
                     if (winamount != -1) {
                         message = "Κέρδισες " + winamount + "$";
+                            if (winamount > 100) {
+                                Giorgos.addXp(20);
+                            }
                     } else {
                         message = "Δεν έχεις αρκετά χρήματα!";
                     }
                     break;
                 case 5:
-                    menu1 = false;
+                    start_menu = false;
                     System.out.println("Αντίο!");
                     break;
                 default:
@@ -63,11 +71,12 @@ public class Main {
             }
 
             // --- ΕΔΩ ΕΙΝΑΙ ΤΟ SHOP (Έξω από το switch, μέσα στο menu1) ---
-            while (menu2) {
+            while (shop_menu) {
                 System.out.println("\n===== SHOP =====");
-                System.out.println("HP: " + Giorgos.getHealth() + " | Υπόλοιπο: " + Giorgos.balance + "$");
+                System.out.println("HP: " + Giorgos.getHealth() + " | Υπόλοιπο: " + Giorgos.wallet + "$" + "| Lvl: " + Giorgos.level + " | XP: " + Giorgos.xp + " / 100 " );
                 System.out.println("1. Health Potion (100$)");
-                System.out.println("2. Επιστροφή");
+                System.out.println("2. Level up Potion (200$)");
+                System.out.println("3. Επιστροφή");
 
                 if (!message.isEmpty()) {
                     System.out.println(">>> " + message);
@@ -82,13 +91,19 @@ public class Main {
                         int healing = Giorgos.HealthPotion();
                         if (healing != -1) {
                             message = "Αγόρασες Health Potion! Πήρες " + healing + " HP";
-                        } else {
+                        }
+
+                        else {
                             message = "Δεν έχεις αρκετά χρήματα!";
                         }
+
                         break;
                     case 2:
-                        menu2 = false;
+                        Giorgos.levelup();
                         break;
+                    case 3:
+                    shop_menu = false;
+
                     default:
                         message = "Μη έγκυρη επιλογή στο Shop";
                 }

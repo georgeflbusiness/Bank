@@ -8,15 +8,15 @@ public class Bank {
     public void Transferto(Account amount, int funds) {
         if (funds <= this.funds) {
             if (funds > 0 && funds < 1000) {
-                amount.balance += funds;
+                amount.wallet += funds;
                 this.funds -= funds;
-                amount.balance -= 2;
+                amount.wallet -= 2;
                 System.out.println("2$ fees ");
             }
             else if (funds >= 1000) {
-                amount.balance += funds;
+                amount.wallet += funds;
                 this.funds -= funds;
-                amount.balance -= 10;
+                amount.wallet -= 10;
                 System.out.println("10$ fees");
             }
             else {

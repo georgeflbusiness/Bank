@@ -2,20 +2,33 @@ import java.util.Random;
 
 
 //CLASS ACCOUNT
-class Account {
-    int balance;
+ public class Account {
+    int wallet;
     private int health;
+    int xp = 0;
+    int level = 1;
 
+
+    //GETTER
     public int getHealth() {
         return health;
+    }
+
+    //XP METHOD
+    public void addXp(int amount) {
+        this.xp += amount;
+        if (xp >= 100) {
+            level++;
+            xp = 0;
+        }
     }
 
 
     //DEPOSIT METHOD
     public void Deposit(Bank funds, int depositamount) {
 
-        if (depositamount <= this.balance) {
-            this.balance -= depositamount;
+        if (depositamount <= this.wallet) {
+            this.wallet -= depositamount;
             funds.funds += depositamount;
         } else {
             System.out.println("Μη έγκυρο ποσό!");
@@ -24,17 +37,28 @@ class Account {
 
 
 
-    //HEALTH POTION METHOD
+    //SETTER
     public void setHealth(int health) {
         this.health = health;
     }
 
+    //LEVEUP POTION METHOD
+    public void levelup() {
+        if (wallet >= 200) {
+            this.wallet -= 200;
+            addXp(100);
+        } else {
+            System.out.println("testing");
+        }
 
-    public int  HealthPotion() {
+    }
+
+
+    public int HealthPotion() {
         Random randomhealth = new Random();
 
-        if (balance >= 100) {
-            balance -= 100;
+        if (wallet >= 100) {
+            wallet -= 100;
             int extrahealth = randomhealth.nextInt(11) + 10;
             health += extrahealth;
             return extrahealth;
@@ -51,10 +75,10 @@ class Account {
     //BET METHOD
     public int Bet() {
         Random randombet = new Random();
-        if (this.balance > 100) {
-            this.balance -= 100 ;
+        if (this.wallet > 100) {
+            this.wallet -= 100 ;
             int betting = randombet.nextInt(181) + 20;
-            this.balance += betting;
+            this.wallet += betting;
             return betting; //επιστρεφει το ποσο
         }
 
