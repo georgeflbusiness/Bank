@@ -13,7 +13,7 @@ public class Bank {
                 amount.wallet += funds;
                 this.funds -= funds;
                 amount.wallet -= 2;
-                System.out.println("2$ fees ");
+                System.out.println("2$ fees! ");
             }
             else if (funds >= 1000) {
                 amount.wallet += funds;

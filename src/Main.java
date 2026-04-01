@@ -54,9 +54,9 @@ public class Main {
                     int winamount = Giorgos.Bet();
                     if (winamount != -1) {
                         message = "Κέρδισες " + winamount + "$";
-                            if (winamount > 100) {
-                                Giorgos.addXp(20);
-                            }
+                        if (winamount > 100) {
+                            Giorgos.addXp(20);
+                        }
                     } else {
                         message = "Δεν έχεις αρκετά χρήματα!";
                     }
@@ -73,7 +73,7 @@ public class Main {
             // --- ΕΔΩ ΕΙΝΑΙ ΤΟ SHOP (Έξω από το switch, μέσα στο menu1) ---
             while (shop_menu) {
                 System.out.println("\n===== SHOP =====");
-                System.out.println("HP: " + Giorgos.getHealth() + " | Υπόλοιπο: " + Giorgos.wallet + "$" + "| Lvl: " + Giorgos.level + " | XP: " + Giorgos.xp + " / 100 " );
+                System.out.println("HP: " + Giorgos.getHealth() + " | Υπόλοιπο: " + Giorgos.wallet + "$" + "| Lvl: " + Giorgos.level + " | XP: " + Giorgos.xp + " / 100 ");
                 System.out.println("1. Health Potion (100$)");
                 System.out.println("2. Level up Potion (200$)");
                 System.out.println("3. Επιστροφή");
@@ -102,12 +102,16 @@ public class Main {
                         Giorgos.levelup();
                         break;
                     case 3:
-                    shop_menu = false;
+                        shop_menu = false;
 
                     default:
                         message = "Μη έγκυρη επιλογή στο Shop";
                 }
+
             }
+
+
         }
+
     }
 }

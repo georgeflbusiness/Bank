@@ -2,7 +2,7 @@ import java.util.Random;
 
 
 //CLASS ACCOUNT
- public class Account {
+public class Account {
     int wallet;
     private int health;
     int xp = 0;
