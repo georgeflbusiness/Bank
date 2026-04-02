@@ -25,7 +25,7 @@ public class Account {
 
 
     //DEPOSIT METHOD
-    public void Deposit(Bank funds, int depositamount) {
+    public void deposit(Bank funds, int depositamount) {
 
         if (depositamount <= this.wallet) {
             this.wallet -= depositamount;
@@ -46,7 +46,7 @@ public class Account {
     public void levelup() {
         if (wallet >= 200) {
             this.wallet -= 200;
-            addXp(100);
+            this.level++;
         } else {
             System.out.println("testing");
         }
@@ -79,6 +79,9 @@ public class Account {
             this.wallet -= 100 ;
             int betting = randombet.nextInt(181) + 20;
             this.wallet += betting;
+            if (betting > 100) {
+                addXp(20);
+            }
             return betting; //επιστρεφει το ποσο
         }
 

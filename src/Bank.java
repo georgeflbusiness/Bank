@@ -1,24 +1,26 @@
 public class Bank {
     int funds;
+    public final int SMALL_FEE = 2;
+    public final int LARGE_FEE = 10;
 
 
-    //CONSCTRUCTOR
-    Bank(int funds) {
+    public Bank(int funds) {
         this.funds = funds;
     }
+
 
     public void Transferto(Account amount, int funds) {
         if (funds <= this.funds) {
             if (funds > 0 && funds < 1000) {
                 amount.wallet += funds;
                 this.funds -= funds;
-                amount.wallet -= 2;
+                amount.wallet -= SMALL_FEE;
                 System.out.println("2$ fees! ");
             }
             else if (funds >= 1000) {
                 amount.wallet += funds;
                 this.funds -= funds;
-                amount.wallet -= 10;
+                amount.wallet -= LARGE_FEE;
                 System.out.println("10$ fees");
             }
             else {
