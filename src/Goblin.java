@@ -1,0 +1,40 @@
+
+
+import java.util.Random;
+
+public class Goblin {
+    String name = "Goblin";
+     private int hp = 100;
+    int attackPower = 10;
+
+
+    //GETTER
+    public int getHp() {
+        return this.hp;
+    }
+
+
+    public int takeDamage(Player player) {
+        Random randomattack = new Random();
+        int randomnumber = randomattack.nextInt(10);
+        int playerpower = player.getPower() - randomnumber;
+        this.hp -= playerpower;
+        return playerpower;
+    }
+
+
+    public int AttackPlayer(Player attacking) {
+        Random attackingpower = new Random();
+        int power = attackingpower.nextInt(4) + 6;
+        int playercurrecthealth = attacking.getHealth();
+        int playernewhealth = playercurrecthealth - power;
+        attacking.setHealth(playernewhealth);
+        return power;
+
+    }
+
+
+
+
+
+}
