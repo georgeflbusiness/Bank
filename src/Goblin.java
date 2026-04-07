@@ -4,13 +4,27 @@ import java.util.Random;
 
 public class Goblin {
     String name = "Goblin";
-     private int hp = 100;
-    int attackPower = 10;
+    private int hp;
+    int attackPower;
 
 
     //GETTER
     public int getHp() {
         return this.hp;
+    }
+    //Getter
+    public int getAttackPower() {
+        return this.attackPower;
+    }
+
+
+    //Setter
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+    //Setter
+    public void setAttackPower(int power) {
+        this.attackPower = power;
     }
 
 

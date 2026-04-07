@@ -3,7 +3,7 @@ import java.util.Random;
 
 //CLASS ACCOUNT
 public class Player {
-    int wallet = 0;
+    private int wallet = 0;
     private int health = 0;
     private int power = 0;
     int xp = 0;
@@ -12,20 +12,29 @@ public class Player {
 
 
     //Getter
+    public int getWallet(){
+        return wallet;
+    }
+    //Getter
     public int getPower() {
         return power;
+    }
+    //Getter
+    public int getHealth() {
+        return health;
+    }
+
+
+    //Setter
+    public void setWallet(int wallet) {
+        this.wallet = wallet;
     }
     //Setter
     public void setPower(int power) {
         this.power = power;
     }
 
-
-    //GETTER
-    public int getHealth() {
-        return health;
-    }
-    //SETTER
+    //Setter
     public void setHealth(int health) {
         this.health = health;
     }
@@ -93,6 +102,7 @@ public class Player {
             wallet -= 100;
             healthpotions++;
             return healthpotions;
+
         }
 
         else {
@@ -108,6 +118,10 @@ public class Player {
             healthpotions--;
         }
 
+        if (this.health > 100) {
+            this.health = 100;
+        }
+
         else {
             System.out.println("You dont have Health Potions");
         }
@@ -116,21 +130,29 @@ public class Player {
 
 
     //BET METHOD
-    public int bet() {
+    public void Treasure1() {
         Random randombet = new Random();
+        int randomnumber = randombet.nextInt(100);
         if (this.wallet > 100) {
-            this.wallet -= 100 ;
-            int betting = randombet.nextInt(181) + 20;
-            this.wallet += betting;
-            if (betting > 100) {
-                addXp(20);
-            }
-            return betting; //επιστρεφει το ποσο
+            this.wallet -= 100;
+
+                if (randomnumber < 10) {
+                    this.wallet += 500;
+                    System.out.println("✨JACKPOT! Κέριδες 500$!");
+                }
+
+                else if (randomnumber < 30) {
+                    this.wallet += 150;
+                    System.out.println("✅Καλά Πήγε! Κερδισες 150$");
+
+                }
+
+                else {
+                    this.wallet += 50;
+                    System.out.println("☠️Ατυχία... Κέρδισες μόνο 50$.");
+                }
         }
 
-        else {
-            return -1; //επιστρεφει -1 αν δεν εχει χρηματα
-        }
 
     }
 
