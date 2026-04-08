@@ -37,12 +37,10 @@ public class Goblin {
     }
 
 
-    public int AttackPlayer(Player attacking) {
+    public int AttackPlayer(Player player) {
         Random attackingpower = new Random();
         int power = attackingpower.nextInt(4) + 6;
-        int playercurrecthealth = attacking.getHealth();
-        int playernewhealth = playercurrecthealth - power;
-        attacking.setHealth(playernewhealth);
+        player.setHealth((player.getHealth()) - power);
         return power;
 
     }
