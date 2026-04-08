@@ -6,6 +6,9 @@ public class Player {
     private int wallet = 0;
     private int health = 0;
     private int power = 0;
+    private int healthPotionHp = 50;
+    private static final int HEALTH_POTION_COST = 100;
+    private static final int MAX_HEALTH = 100;
     int xp = 0;
     int level = 1;
     int healthpotions = 0;
@@ -96,10 +99,10 @@ public class Player {
     }
 
 
-    public int BuyHealthPotion() {
+    public int buyHealthPotion() {
 
-        if (wallet >= 100) {
-            wallet -= 100;
+        if (wallet >= HEALTH_POTION_COST) {
+            wallet -= HEALTH_POTION_COST;
             healthpotions++;
             return healthpotions;
 
@@ -112,43 +115,46 @@ public class Player {
 
     }
 
-    public void UseHealthPotions() {
-        if(healthpotions >= 1) {
-            this.health += 50;
-            healthpotions--;
+    public void useHealthPotions() {
+
+        if(healthpotions <= 0) {
+            System.out.println("Δεν έχεις φίλτρα");
+            return;
         }
 
-        if (this.health > 100) {
-            this.health = 100;
-        }
+        this.health = Math.min(this.health + healthPotionHp, MAX_HEALTH);
+        healthpotions--;
 
-        else {
-            System.out.println("You dont have Health Potions");
-        }
 
     }
 
 
-    //BET METHOD
-    public void Treasure1() {
+    //WOODEN CRATE METHOD
+    public void woodenCrate() {
+        final int MIN_REWARD = 50;
+        final int MIDDLE_REWARD = 150;
+        final int MAX_REWARD = 350;
+
         Random randombet = new Random();
         int randomnumber = randombet.nextInt(100);
+
+
         if (this.wallet > 100) {
             this.wallet -= 100;
 
                 if (randomnumber < 10) {
-                    this.wallet += 500;
-                    System.out.println("✨JACKPOT! Κέριδες 500$!");
+                    this.wallet += MAX_REWARD;
+                    System.out.println("✨JACKPOT! Κέριδες 350$!");
                 }
 
                 else if (randomnumber < 30) {
-                    this.wallet += 150;
+                    this.wallet += MIDDLE_REWARD;
                     System.out.println("✅Καλά Πήγε! Κερδισες 150$");
 
                 }
 
                 else {
-                    this.wallet += 50;
+                    this.wallet += MIN_REWARD;
                     System.out.println("☠️Ατυχία... Κέρδισες μόνο 50$.");
                 }
         }

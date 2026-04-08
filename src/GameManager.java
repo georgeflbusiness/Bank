@@ -158,7 +158,7 @@ public class GameManager {
         System.out.println("    Prizes:    |    Chances:");
         System.out.println("    • 50$      |    60% (Common)");
         System.out.println("    • 150$     |    30% (Uncommon)");
-        System.out.println("    • 500$     |    10% (RARE! ✨)");
+        System.out.println("    • 350$     |    10% (RARE! ✨)");
 
 
         System.out.println("\n 5. [ ↩ ΕΠΙΣΤΡΟΦΗ ]");
@@ -252,7 +252,7 @@ public class GameManager {
 
         switch (choice) {
             case 1:
-                player.Treasure1();
+                player.woodenCrate();
                 break;
             case 5:
                 currectState = GameState.MAIN_MENU;
@@ -298,13 +298,13 @@ public class GameManager {
      * Bet method
      */
     public void handleBet() {
-        player.Treasure1();
+        player.woodenCrate();
 
     }
 
 
     public void handleHealthPotion() {
-        player.BuyHealthPotion();
+        player.buyHealthPotion();
 
     }
 
@@ -351,27 +351,34 @@ public class GameManager {
                     System.out.println("Έκανες " + actualdamage +  " ζημιά");
                     System.out.println("Σου έκανε " + actualhit + " ζημιά");
 
-                    if (player.getHealth() <= 0 && goblin.getHp() > 0) {
-                        System.out.println("Πέθανες");
-                        currectState = GameState.MAIN_MENU;
-                        player.setHealth(50);
-                        player.setWallet(0);
-                    }
 
-                    else if (player.getHealth() > 0 && goblin.getHp() <= 0) {
-                        System.out.println("Κέρδισες την Μάχη + 200$");
+                    //Check if player die
+                    if (player.getHealth() <= 0) {
+                        System.out.println("💀 Πέθανες! Έχασες όλο το πορτοφόλι σου.");
                         fighting = false;
                         currectState = GameState.MAIN_MENU;
-                        int currectplayerwallet = player.getWallet();
-                        int playerlossmoney = 200;
-                        int newplayerwallet = currectplayerwallet - playerlossmoney;
-                        player.setWallet(newplayerwallet);
-                        player.addXp(50);
+
+                        //Resets
+                        player.setHealth(50); //Reset HP
+                        player.setWallet(0);//Loss Player Wallet
                         goblin.setHp(100);
+                        break;
                     }
+
+
+                    else if (goblin.getHp() <= 0) {
+                            System.out.println("🏆 Κέρδισες τη μάχη! +200$ και +50 XP");
+                            player.setWallet(player.getWallet() + 200); // Player Reward
+                            player.addXp(50);
+
+                           //Resets
+                            goblin.setHp(100);
+                            fighting = false;
+                            currectState = GameState.MAIN_MENU;
+                        }
                     break;
                 case 2:
-                    player.UseHealthPotions();
+                    player.useHealthPotions();
                     break;
                 case 5:
                     player.xp -= 50;
