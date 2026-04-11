@@ -30,7 +30,6 @@ public class GameManager {
         this.input = new Scanner(System.in);
 
 
-
         //SETTINGS
         player.setHealth(20);
         bank.setFunds(5000);
@@ -38,9 +37,6 @@ public class GameManager {
         goblin.setHp(100);
         goblin.setPower(10);
     }
-
-
-
 
 
     //ENUM
@@ -52,7 +48,6 @@ public class GameManager {
         LOOT_BOXES,
         EXIT
     }
-
 
 
     /**
@@ -94,96 +89,159 @@ public class GameManager {
 
 //-----------------------------------------------------------------------------------
 
+    //DISPLAY METHODS - ΜΟΝΟ PRINT
+    public static final String RESET = "\u001B[0m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String RED = "\u001B[31m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String MAGENTA = "\u001B[35m";
+    public static final String WHITE = "\u001B[37m";
 
 
-    /**
-     * Εμφανίζει το κύριο menu - μονο print
-     */
     private void displayMainMenu() {
-        System.out.println("\n" + "═".repeat(50));
-        System.out.println("  💰 BANK: " + bank.getFunds() + "  |  👛 WALLET: " + player.getWallet() + "$");
-        System.out.println("  ❤️ HP: " + player.getHealth() + "  |  ⭐ LVL: " + player.getLevel() + " " + "[" + player.getXp() + "/" + player.xpForLevelUp + "]" +  " |  ⚔️ PWR: " + player.getPower());
-        System.out.println("═".repeat(50));
-        System.out.println("  1. [Bank]              4. [Loot Boxes]");
-        System.out.println("  2. [Coming Soon]       5. [Arena]");
-        System.out.println("  3. [Shop]              6. [Exit]");
-        System.out.println("═".repeat(50));
-        System.out.print("➤ Επιλογή: ");
+        String ui = String.format("""
+    %s=============================================================%s
+                   🏰  TOWN CENTER - MAIN MENU  🏰
+    %s=============================================================%s
+    
+    💰 BANK: %-7d     | 👛 WALLET: %s%d💲%s
+    ❤️ HP: %-7d       | ⚔️ PWR: %s%-10d%s
+    ⭐ LVL: %-7d      | ✨ XP: %d/%d
+    
+    %s=============================================================%s
+    
+      %s1. [🏛️  BANK]%s              %s4. [📦  LOOT BOXES]%s
+      %s2. [🔒  COMING SOON]%s       %s5. [🏟️  ARENA]%s
+      %s3. [🛒  SHOP]%s              %s6. [🚪  EXIT]%s
+    
+    %s=============================================================%s
+    ➤ Επιλογή:\s""",
+                CYAN, RESET,
+                CYAN, RESET,
+                bank.getFunds(), GREEN, player.getWallet(), RESET,
+                player.getHealth(), GREEN, player.getPower(), RESET,
+                player.getLevel(), player.getXp(), player.xpForLevelUp,
+                CYAN, RESET,
+                YELLOW, RESET, MAGENTA, RESET,
+                YELLOW, RESET, RED, RESET,
+                YELLOW, RESET, WHITE, RESET,
+                CYAN, RESET
+        );
+
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.print(ui);
     }
 
+
+
     private void displayBankMenu() {
-        System.out.println("═".repeat(50));
-        System.out.println("                    BANK");
-        System.out.println("  💰 BANK: " + bank.getFunds() + "  |  👛 WALLET: " + player.getWallet() + "$");
-        System.out.println("═".repeat(50));
-        System.out.println("  1. [Deposit]");
-        System.out.println("  2. [Withdraw]");
-        System.out.println("  3. [ ↩ ΕΠΙΣΤΡΟΦΗ ]");
-        System.out.println("═".repeat(50));
-        System.out.print("➤ Επιλογή: ");
+        String ui = String.format("""
+        %s=============================================================%s
+                          🏦  IRON BANK OF BRAAVOS  🏦
+        %s=============================================================%s
+        
+        💰 BANK: %-7d    | 👛 WALLET: %s%d💲%s
+        
+        %s=============================================================%s
+        
+          %s1. [📥  DEPOSIT]%s
+          %s2. [📤  WITHDRAW]%s
+        
+          %s3. [↩️   BACK TO TOWN]%s
+        
+        %s=============================================================%s
+        ➤ Επιλογή:\s""",
+                CYAN, RESET,
+                CYAN, RESET,
+                bank.getFunds(), GREEN, player.getWallet(), RESET,
+                CYAN, RESET,
+                YELLOW, RESET,
+                YELLOW, RESET,
+                WHITE, RESET,
+                CYAN, RESET
+        );
+
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.print(ui);
     }
 
 
     /**
      * Εμφανιζει το shop menu - μονο print
      */
-   private void displayShopMenu() {
-       System.out.print("\033[H\033[2J");
-       System.out.flush();
+    private void displayShopMenu() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
 
-       String ui = """
- ════════════════════════════════════════════════════════════
-                                                            
-                 🏪 MAGIC SHOP - CLASSIC 🏪
-             
- ═════════════════════════════════════════════════════════════
-  👛 WALLET: %-5d$  |  ❤️ HP: %d%%   |  ⭐ LVL: %d
+        String ui = """
+                 ════════════════════════════════════════════════════════════
+                
+                                 🏪 MAGIC SHOP - CLASSIC 🏪
+                
+                 ═════════════════════════════════════════════════════════════
+                  👛 WALLET: %-5d$  |  ❤️ HP: %d%%   |  ⭐ LVL: %d
+                
+                  ITEM                    PRICE      Inventory   STATS
+                  ──────────────────────────────────────────────────────
+                  1. Health Potion           %d💲     📦 x%d    +50 HP
+                  2. Level-up Potion         100💲    📦 x0     +1 LVL
+                  3. Mana Potion             150💲    📦 x0     +30 MP
+                  ──────────────────────────────────────────────────────
+                  4. [Back To Town]
+                ═══════════════════════════════════════════════════════════════
+                \s""".formatted(player.getWallet(), player.getHealth(), player.getLevel(), shop.getHealthPotionCost(), player.healthpotions);
 
-  ITEM                    PRICE      Inventory   STATS
-  ──────────────────────────────────────────────────────
-  1. Health Potion           %d💲     📦 x%d    +50 HP
-  2. Level-up Potion         100💲    📦 x0     +1 LVL
-  3. Mana Potion             150💲    📦 x0     +30 MP
-  ──────────────────────────────────────────────────────
-  4. [Back To Town]
-═══════════════════════════════════════════════════════════════
-\s""".formatted(player.getWallet(), player.getHealth(),player.getLevel(),shop.getHealthPotionCost(),player.healthpotions);
+        System.out.println(ui);
+        if (!shopMessage.isEmpty()) {
+            System.out.println(shopMessage);
+            shopMessage = "";
+        }
 
-       System.out.println(ui);
-       if (!shopMessage.isEmpty()) {
-           System.out.println(shopMessage);
-           shopMessage = "";
-         }
-
-       System.out.print("➤ Επιλογή: ");
-   }
+        System.out.print("➤ Επιλογή: ");
+    }
 
 
     /**
      * Εμφανιζει την Arena menu - μονο print
      */
     private void displayArenaMenu() {
-        System.out.println("\n" + "═".repeat(61));
-        System.out.println("                  ⚔️  BATTLE ARENA  ⚔️");
+        String ui = String.format("""
+        %s=============================================================%s
+                   ⚔️  BATTLE ARENA - SELECT ENEMY  ⚔️
+        %s=============================================================%s  
+        ❤️ HP: %-7d          | ⚔️ PWR: %s%-10d%s
+        ⭐ LVL: %-7d         | 👛 WALLET: %s%d💲%s
+        %s=============================================================%s
+        
+        1.                 👹 [ GOBLIN ]
+           ───────────────────────────────────────────────
+           STATISTICS:                 | REWARDS:
+           ❤️ HP: %-7d              | 💰 %d
+           ⚔️ PWR:%-7d              | ✨ XP: %-5d
+           ───────────────────────────────────────────────
+        
+        %s5. [↩️   BACK TO TOWN]%s
+        
+        %s=============================================================%s
+        ➤ Επιλογή:\s""",
+                CYAN, RESET,
+                CYAN, RESET,
+                player.getHealth(), GREEN, player.getPower(), RESET,
+                player.getLevel(), GREEN, player.getWallet(), RESET,
+                CYAN, RESET,
+                // Stats Goblin
+                goblin.getHp(), 200,
+                goblin.getPower(), 50,
+                WHITE, RESET,
+                CYAN, RESET
+        );
 
-// Χρησιμοποιούμε %-10s ή %-5d για να κρατάμε σταθερά κενά
-        System.out.printf("  ❤️ HP: %-8d|  ⚔️ PWR: %-7d|  ⭐ LVL: %d\n",
-                player.getHealth(), player.getPower(), player.getLevel());
-        System.out.println("═".repeat(61));
-
-        System.out.println("1.       👹  [ GOBLIN ] 👹");
-        System.out.println("       " + "-".repeat(22));
-        System.out.println("        Stats     |     Rewards");
-
-// Εδώ το %-10d εξασφαλίζει ότι το Reward θα μένει πάντα στην ίδια στήλη
-        System.out.printf("     ❤️ %-10d|     200💲\n", goblin.getHp());
-        System.out.printf("     ⚔️ %-10d|     XP:50\n", goblin.getPower());
-
-        System.out.println("═".repeat(61));
-
-        System.out.println("5. [ ↩ ΕΠΙΣΤΡΟΦΗ ]");
-        System.out.println("═".repeat(61));
-        System.out.print("➤ Επιλογή: ");
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.print(ui);
     }
 
 
@@ -192,47 +250,69 @@ public class GameManager {
      */
 
     private void displayLootBoxes() {
-        System.out.println("\n" + "═".repeat(61));
-        System.out.println("                   🎁  LOOT BOX SHOP  🎁");
-        System.out.println("                       👛 WALLET:" + player.getWallet() + "$");
-        System.out.println("═".repeat(61));
-        System.out.println("1. [ WOODEN CRATE ] 📦  Cost: 100$");
-        System.out.println("    " + "-".repeat(33));
-        System.out.println("    Prizes:    |    Chances:");
-        System.out.println("    • 50$      |    60% (Common)");
-        System.out.println("    • 150$     |    30% (Uncommon)");
-        System.out.println("    • 350$     |    10% (RARE! ✨)");
+        String ui = String.format("""
+        %s=============================================================%s
+                          🎁  PREMIUM LOOT BOX SHOP  🎁
+        %s=============================================================%s
+        👛 WALLET: %s%d💲%s               | ✨ STATUS: %sLUCKY%s
+        %s=============================================================%s
+        
+        1. 📦 [ WOODEN CRATE ] - COST: 100$
+           ─────────────────────────────────────────────────────────
+           POSSIBLE PRIZES:          | CHANCE:
+           • 50$  (Common)           | 60%%
+           • 150$ (Uncommon)         | 30%%
+           • 350$ (RARE! ✨)         | 10%%
+           ─────────────────────────────────────────────────────────
+        
+        %s5. [↩️   BACK TO TOWN]%s
+        
+        %s=============================================================%s
+        ➤ Επιλογή:\s""",
+                CYAN, RESET,
+                CYAN, RESET,
+                GREEN, player.getWallet(), RESET, YELLOW, RESET,
+                CYAN, RESET,
+                WHITE, RESET,
+                CYAN, RESET
+        );
 
-
-        System.out.println("\n 5. [ ↩ ΕΠΙΣΤΡΟΦΗ ]");
-        System.out.println("═".repeat(61));
-        System.out.print("➤ Επιλογή: ");
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.print(ui);
     }
 
-
-
-
-    //Displa
+    //Display Arena Goblin Menu - μονο print
     private void displayArenaGoblin() {
-        System.out.println("\n" + "═".repeat(61));
-        System.out.println("                  ⚔️  BATTLE IN PROGRESS  ⚔️");
-        System.out.println("═".repeat(61));
-
-
-        System.out.printf("  YOU:    ❤️ HP: %-10d |  ⚔️ PWR: %-10d\n",
-                player.getHealth(), player.getPower());
-        System.out.printf("  GOBLIN: ❤️ HP: %-10d |  ⚔️ PWR: %-10d\n",
-                goblin.getHp(), goblin.getPower());
-
-        System.out.println("─".repeat(61));
-
-        System.out.println(" 1. [⚔️ATTACK]");
-        System.out.printf(" 2. [🧪USE  HEALTH POTION] (📦 x%d)\n", player.healthpotions);
-        System.out.println(" 5. [🏳️RETREAT] (Ποινή: -50 XP)");
-
-        System.out.println("═".repeat(61));
-        System.out.print("➤ Επιλογή: ");
+        String ui = String.format("""
+                        %s=============================================================%s
+                                          ⚔️  BATTLE IN PROGRESS  ⚔️
+                        %s=============================================================%s
+                        
+                        ❤️ HP: %s%-5d%s  |  ⚔️ PWR: %s%-5d%s  |  📦 POTIONS: %s%d%s
+                        
+                        %s%-20s %-15s %-15s%s
+                        ─────────────────────────────────────────────────────────────
+                        %-20s %-15d %-15d
+                        %s%-20s %-15d %-15d%s
+                        ─────────────────────────────────────────────────────────────
+                        
+                        %s1. [⚔️ ATTACK]%s
+                        %s2. [🧪 USE POTION]%s
+                        %s5. [🏳️ RETREAT]%s
+                        
+                        =============================================================
+                        ➤ Επιλογή:\s""",
+                CYAN, RESET, CYAN, RESET,
+                RED, player.getHealth(), RESET, GREEN, player.getPower(), RESET, CYAN, player.healthpotions, RESET,
+                CYAN, "TARGET", "HEALTH", "POWER", RESET,
+                "👤 YOU", player.getHealth(), player.getPower(),
+                RED, "👹 GOBLIN", goblin.getHp(), goblin.getPower(), RESET,
+                GREEN, RESET, CYAN, RESET, RED, RESET
+        );
+        System.out.print(ui);
     }
+
 
 
 
