@@ -1,14 +1,18 @@
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.util.Random;
 import java.util.Scanner;
 
 
 public class GameManager {
     private Bank bank;
+    private Shop shop;
     private Player player;
     private Goblin goblin;
     private Scanner input;
     boolean isRunning = true;
     private GameState currectState = GameState.MAIN_MENU;
+    private String shopMessage = "";
 
 
     /**
@@ -20,17 +24,19 @@ public class GameManager {
         //CREATE OBJECTS-SCANNER
         this.bank = new Bank();
         this.player = new Player();
+        this.shop = new Shop(player);
+        player.setShop(shop);
         this.goblin = new Goblin();
         this.input = new Scanner(System.in);
 
 
 
         //SETTINGS
-        player.setHealth(50);
+        player.setHealth(20);
         bank.setFunds(5000);
         player.setPower(20);
         goblin.setHp(100);
-        goblin.setAttackPower(10);
+        goblin.setPower(10);
     }
 
 
@@ -40,6 +46,7 @@ public class GameManager {
     //ENUM
     public enum GameState {
         MAIN_MENU,
+        BANK,
         SHOP,
         ARENA,
         LOOT_BOXES,
@@ -60,6 +67,10 @@ public class GameManager {
                 case MAIN_MENU:
                     displayMainMenu();
                     handleMenuChoice();
+                    break;
+                case BANK:
+                    displayBankMenu();
+                    handleBankMenu();
                     break;
                 case SHOP:
                     displayShopMenu();
@@ -91,11 +102,23 @@ public class GameManager {
     private void displayMainMenu() {
         System.out.println("\n" + "═".repeat(50));
         System.out.println("  💰 BANK: " + bank.getFunds() + "  |  👛 WALLET: " + player.getWallet() + "$");
-        System.out.println("  ❤️ HP: " + player.getHealth() + "  |  ⭐ LVL: " + player.level + "(" + player.xp + "/100 XP)" +  "|  ⚔️ PWR: " + player.getPower());
+        System.out.println("  ❤️ HP: " + player.getHealth() + "  |  ⭐ LVL: " + player.getLevel() + " " + "[" + player.getXp() + "/" + player.xpForLevelUp + "]" +  " |  ⚔️ PWR: " + player.getPower());
         System.out.println("═".repeat(50));
-        System.out.println("  1. [Withdraw]      4. [Loot Boxes]");
-        System.out.println("  2. [Deposit]       5. [Arena]");
-        System.out.println("  3. [Shop]          6. [Exit]");
+        System.out.println("  1. [Bank]              4. [Loot Boxes]");
+        System.out.println("  2. [Coming Soon]       5. [Arena]");
+        System.out.println("  3. [Shop]              6. [Exit]");
+        System.out.println("═".repeat(50));
+        System.out.print("➤ Επιλογή: ");
+    }
+
+    private void displayBankMenu() {
+        System.out.println("═".repeat(50));
+        System.out.println("                    BANK");
+        System.out.println("  💰 BANK: " + bank.getFunds() + "  |  👛 WALLET: " + player.getWallet() + "$");
+        System.out.println("═".repeat(50));
+        System.out.println("  1. [Deposit]");
+        System.out.println("  2. [Withdraw]");
+        System.out.println("  3. [ ↩ ΕΠΙΣΤΡΟΦΗ ]");
         System.out.println("═".repeat(50));
         System.out.print("➤ Επιλογή: ");
     }
@@ -105,14 +128,34 @@ public class GameManager {
      * Εμφανιζει το shop menu - μονο print
      */
    private void displayShopMenu() {
-       System.out.println("\n" + "═".repeat(50));
-     System.out.println("❤️ HP: " + player.getHealth() + "  |  👛 WALLET: " + player.getWallet() + "$" + "  |  ⭐ LVL: " + player.level + "(" + player.xp + "/100 XP)" );
-     System.out.println("═".repeat(50));
-     System.out.println("1. Buy Health Potion [100💲]" + " | 📦 " + player.healthpotions);
-     System.out.println("2. Level-up Potion [100💲]");
-     System.out.println("3. Επιστροφή");
-     System.out.println("═".repeat(50));
-     System.out.print("➤ Επιλογή: ");
+       System.out.print("\033[H\033[2J");
+       System.out.flush();
+
+       String ui = """
+ ════════════════════════════════════════════════════════════
+                                                            
+                 🏪 MAGIC SHOP - CLASSIC 🏪
+             
+ ═════════════════════════════════════════════════════════════
+  👛 WALLET: %-5d$  |  ❤️ HP: %d%%   |  ⭐ LVL: %d
+
+  ITEM                    PRICE      Inventory   STATS
+  ──────────────────────────────────────────────────────
+  1. Health Potion           %d💲     📦 x%d    +50 HP
+  2. Level-up Potion         100💲    📦 x0     +1 LVL
+  3. Mana Potion             150💲    📦 x0     +30 MP
+  ──────────────────────────────────────────────────────
+  4. [Back To Town]
+═══════════════════════════════════════════════════════════════
+\s""".formatted(player.getWallet(), player.getHealth(),player.getLevel(),shop.getHealthPotionCost(),player.healthpotions);
+
+       System.out.println(ui);
+       if (!shopMessage.isEmpty()) {
+           System.out.println(shopMessage);
+           shopMessage = "";
+         }
+
+       System.out.print("➤ Επιλογή: ");
    }
 
 
@@ -125,7 +168,7 @@ public class GameManager {
 
 // Χρησιμοποιούμε %-10s ή %-5d για να κρατάμε σταθερά κενά
         System.out.printf("  ❤️ HP: %-8d|  ⚔️ PWR: %-7d|  ⭐ LVL: %d\n",
-                player.getHealth(), player.getPower(), player.level);
+                player.getHealth(), player.getPower(), player.getLevel());
         System.out.println("═".repeat(61));
 
         System.out.println("1.       👹  [ GOBLIN ] 👹");
@@ -134,7 +177,7 @@ public class GameManager {
 
 // Εδώ το %-10d εξασφαλίζει ότι το Reward θα μένει πάντα στην ίδια στήλη
         System.out.printf("     ❤️ %-10d|     200💲\n", goblin.getHp());
-        System.out.printf("     ⚔️ %-10d|     XP:50\n", goblin.attackPower);
+        System.out.printf("     ⚔️ %-10d|     XP:50\n", goblin.getPower());
 
         System.out.println("═".repeat(61));
 
@@ -168,6 +211,31 @@ public class GameManager {
 
 
 
+
+    //Displa
+    private void displayArenaGoblin() {
+        System.out.println("\n" + "═".repeat(61));
+        System.out.println("                  ⚔️  BATTLE IN PROGRESS  ⚔️");
+        System.out.println("═".repeat(61));
+
+
+        System.out.printf("  YOU:    ❤️ HP: %-10d |  ⚔️ PWR: %-10d\n",
+                player.getHealth(), player.getPower());
+        System.out.printf("  GOBLIN: ❤️ HP: %-10d |  ⚔️ PWR: %-10d\n",
+                goblin.getHp(), goblin.getPower());
+
+        System.out.println("─".repeat(61));
+
+        System.out.println(" 1. [⚔️ATTACK]");
+        System.out.printf(" 2. [🧪USE  HEALTH POTION] (📦 x%d)\n", player.healthpotions);
+        System.out.println(" 5. [🏳️RETREAT] (Ποινή: -50 XP)");
+
+        System.out.println("═".repeat(61));
+        System.out.print("➤ Επιλογή: ");
+    }
+
+
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /** Χειριζεται τις επιλογες του menu
@@ -178,10 +246,9 @@ public class GameManager {
 
         switch (choice) {
             case 1:
-                handleWithdraw();
+                currectState = GameState.BANK;
                 break;
             case 2:
-                handleDeposit();
                 break;
             case 3:
                 currectState = GameState.SHOP;
@@ -200,11 +267,26 @@ public class GameManager {
         }
     }
 
-
-
     /**
      * Χειριζεται τις επιλογες του shop
      */
+    private void handleBankMenu() {
+        int choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                handleDeposit();
+                break;
+            case 2:
+                handleWithdraw();
+                break;
+            case 3:
+                currectState = GameState.MAIN_MENU;
+                break;
+            default:
+                System.out.println("Μη έγκυρη επιλογή!");
+        }
+    }
 
     private void handleShopMenu() {
         int choice = input.nextInt();
@@ -304,13 +386,20 @@ public class GameManager {
 
 
     public void handleHealthPotion() {
-        player.buyHealthPotion();
+        int result = shop.buyHealthPotion();
+
+        if (result == -1) {
+            shopMessage = "Δεν έχεις αρκετά χρήματα για να αγοράσεις ένα Health Potion!";
+        }
+        else {
+            shopMessage = "Αγόρασες ένα Health Potion! Έχεις " + player.healthpotions + " στο inventory σου.";
+        }
 
     }
 
 
     public void handleLevelPotion() {
-        player.levelup();
+        player.levelUpPotion();
 
     }
 
@@ -323,25 +412,7 @@ public class GameManager {
         System.out.println("Μπήκες στην Arena με το Goblin");
 
         while (fighting) {
-            System.out.println("\n" + "═".repeat(61));
-            System.out.println("                  ⚔️  BATTLE IN PROGRESS  ⚔️");
-            System.out.println("═".repeat(61));
-
-// Στατιστικά Μάχης
-            System.out.printf("  YOU:    ❤️ HP: %-10d |  ⚔️ PWR: %-10d\n",
-                    player.getHealth(), player.getPower());
-            System.out.printf("  GOBLIN: ❤️ HP: %-10d |  ⚔️ PWR: %-10d\n",
-                    goblin.getHp(), goblin.attackPower);
-
-            System.out.println("─".repeat(61));
-
-// Επιλογές
-            System.out.println(" 1. [⚔️ATTACK]");
-            System.out.printf(" 2. [🧪USE  HEALTH POTION] (📦 x%d)\n", player.healthpotions);
-            System.out.println(" 5. [🏳️RETREAT] (Ποινή: -50 XP)");
-
-            System.out.println("═".repeat(61));
-            System.out.print("➤ Επιλογή: ");
+                displayArenaGoblin();
             int choice = input.nextInt();
 
             switch (choice) {
@@ -365,7 +436,7 @@ public class GameManager {
                         break;
                     }
 
-
+                    //Check if Goblin die
                     else if (goblin.getHp() <= 0) {
                             System.out.println("🏆 Κέρδισες τη μάχη! +200$ και +50 XP");
                             player.setWallet(player.getWallet() + 200); // Player Reward
@@ -381,7 +452,7 @@ public class GameManager {
                     player.useHealthPotions();
                     break;
                 case 5:
-                    player.xp -= 50;
+                    player.setXp(player.getXp() - 50); //Penalty
                     currectState = GameState.MAIN_MENU;
                     fighting = false;
                     break;

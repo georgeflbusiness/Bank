@@ -3,17 +3,32 @@ import java.util.Random;
 
 //CLASS ACCOUNT
 public class Player {
+    private Shop shop;
     private int wallet = 0;
     private int health = 0;
     private int power = 0;
     private int healthPotionHp = 50;
-    private static final int HEALTH_POTION_COST = 100;
     private static final int MAX_HEALTH = 100;
-    int xp = 0;
-    int level = 1;
+    private int levelUpPotionCost = 200;
+    private int xp = 0;
+    private int level = 1;
     int healthpotions = 0;
+    private static int keys = 0;
+    int xpForLevelUp = 100;
 
 
+    //Getter
+    public int getXp() {
+        return xp;
+    }
+    //Getter
+    public int getLevel() {
+        return level;
+    }
+    //Getter
+    public int getKeys() {
+        return keys;
+    }
     //Getter
     public int getWallet(){
         return wallet;
@@ -26,8 +41,27 @@ public class Player {
     public int getHealth() {
         return health;
     }
+    //Getter
+    public int getLevelUpPotionCost() {
+        return levelUpPotionCost;
+    }
+    //Getter
+    public int getHealthpotions() {
+        return healthpotions;
+    }
 
-
+    //Setter
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+    //Setter
+    public void setLevel(int level) {
+        this.level = level;
+    }
+    //Setter
+    public void setKeys(int keys) {
+        this.keys = keys;
+    }
     //Setter
     public void setWallet(int wallet) {
         this.wallet = wallet;
@@ -36,12 +70,48 @@ public class Player {
     public void setPower(int power) {
         this.power = power;
     }
-
     //Setter
     public void setHealth(int health) {
         this.health = health;
     }
+    //Setter
+    public void setLevelUpPotionCost(int newCost) {
+        this.levelUpPotionCost = newCost;
+    }
+    //Setter
+    public void setHealthpotions(int healthpotions) {
+        this.healthpotions = healthpotions;
+    }
+    //Setter
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 
+
+
+    public void levelup() {
+        this.level++;
+        System.out.println("Συγχαρητήρια! Έχεις ανέβει στο επίπεδο " + this.level + "!");
+
+        switch (this.level) {
+            case 2:
+                this.power += 5;
+                xpForLevelUp = 200;
+                shop.setHealthPotionCost(shop.getHealthPotionCost() + 20);
+                System.out.println("Η δύναμή σου αυξήθηκε κατά 5!");
+                break;
+            case 3:
+                this.power += 10;
+                xpForLevelUp = 300;
+                System.out.println("Η δύναμή σου αυξήθηκε κατά 10!");
+                break;
+            case 4:
+                this.power += 15;
+                xpForLevelUp = 400;
+                System.out.println("Η δύναμή σου αυξήθηκε κατά 15!");
+                break;
+        }
+    }
 
 
 
@@ -50,20 +120,15 @@ public class Player {
     public void addXp(int amount) {
         this.xp += amount;
 
+        int xpRequired = 100 * this.level;
+        this.xpForLevelUp += xpRequired;
+        while (this.xp >= xpRequired) {
+            this.xp -= xpRequired;
+            this.levelup();
 
-        if (this.level == 1 && xp >= 100) {
-            level++;
-            xp = 0;
-        }
 
-        else if(this.level == 2 && xp >= 200) {
-            level++;
-            xp = 0;
-        }
-
-        else if(this.level == 3 && xp >= 300) {
-            level++;
-            xp = 0;
+            //update the xprequired for the next level
+            xpRequired = 100 * this.level;
         }
 
 
@@ -88,32 +153,17 @@ public class Player {
 
 
     //LEVEUP POTION METHOD!
-    public void levelup() {
-        if (wallet >= 200) {
-            this.wallet -= 200;
-            this.addXp(100);
-        } else {
-            System.out.println("testing");
+    public void levelUpPotion() {
+
+        if (this.wallet < levelUpPotionCost) {
+            System.out.println("Δεν έχεις αρκετά χρήματα");
+            return;
         }
+            this.wallet -= levelUpPotionCost;
+            levelup();
 
     }
 
-
-    public int buyHealthPotion() {
-
-        if (wallet >= HEALTH_POTION_COST) {
-            wallet -= HEALTH_POTION_COST;
-            healthpotions++;
-            return healthpotions;
-
-        }
-
-        else {
-            return -1;
-
-        }
-
-    }
 
     public void useHealthPotions() {
 
@@ -124,7 +174,6 @@ public class Player {
 
         this.health = Math.min(this.health + healthPotionHp, MAX_HEALTH);
         healthpotions--;
-
 
     }
 

@@ -3,9 +3,9 @@
 import java.util.Random;
 
 public class Goblin {
-    String name = "Goblin";
+    static String name = "Goblin";
     private int hp;
-    int attackPower;
+    private int power;
 
 
     //GETTER
@@ -13,8 +13,8 @@ public class Goblin {
         return this.hp;
     }
     //Getter
-    public int getAttackPower() {
-        return this.attackPower;
+    public int getPower() {
+        return this.power;
     }
 
 
@@ -23,14 +23,14 @@ public class Goblin {
         this.hp = hp;
     }
     //Setter
-    public void setAttackPower(int power) {
-        this.attackPower = power;
+    public void setPower(int power) {
+        this.power = power;
     }
 
 
     public int takeDamage(Player player) {
         Random randomattack = new Random();
-        int randomnumber = randomattack.nextInt(10);
+        int randomnumber = randomattack.nextInt(5);
         int playerpower = player.getPower() - randomnumber;
         this.hp -= playerpower;
         return playerpower;
