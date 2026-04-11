@@ -1,6 +1,4 @@
-
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -32,6 +30,7 @@ public class GameManager {
 
         //SETTINGS
         player.setHealth(20);
+        player.setWallet(50000);
         bank.setFunds(5000);
         player.setPower(20);
         goblin.setHp(100);
@@ -43,6 +42,7 @@ public class GameManager {
     public enum GameState {
         MAIN_MENU,
         BANK,
+        INVENTORY,
         SHOP,
         ARENA,
         LOOT_BOXES,
@@ -66,6 +66,10 @@ public class GameManager {
                 case BANK:
                     displayBankMenu();
                     handleBankMenu();
+                    break;
+                case INVENTORY:
+                    displayInventory();
+                    handleInventory();
                     break;
                 case SHOP:
                     displayShopMenu();
@@ -112,7 +116,7 @@ public class GameManager {
     %s=============================================================%s
     
       %s1. [🏛️  BANK]%s              %s4. [📦  LOOT BOXES]%s
-      %s2. [🔒  COMING SOON]%s       %s5. [🏟️  ARENA]%s
+      %s2. [🎒  INVENTORY]%s       %s5. [🏟️  ARENA]%s
       %s3. [🛒  SHOP]%s              %s6. [🚪  EXIT]%s
     
     %s=============================================================%s
@@ -168,6 +172,52 @@ public class GameManager {
         System.out.print(ui);
     }
 
+    private void displayInventory() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.println(CYAN + "=============================================================" + RESET);
+        System.out.println("                   🎒 ΤΟ ΣΑΚΙΔΙΟ ΣΟΥ 🎒");
+        System.out.println(CYAN + "=============================================================" + RESET);
+
+        // Παίρνουμε τη λίστα με τα αντικείμενα του παίκτη
+        ArrayList<Item> inv = player.getInventory();
+
+        // Ελέγχουμε αν είναι άδεια
+        if (inv.isEmpty()) {
+            System.out.println(YELLOW + "\n  Το σακίδιό σου είναι άδειο... Πήγαινε στο Shop!\n" + RESET);
+        } else {
+            ArrayList<String> printedNames = new ArrayList<>();
+
+            // LOOP: Περνάμε μέσα από κάθε στοιχείο της λίστας!
+            for (int i = 0; i < inv.size(); i++) {
+                Item currentItem = inv.get(i);
+                String itemName = currentItem.getName();
+
+                if (!printedNames.contains(itemName)) {
+                    // 1. Μετράμε πόσα έχουμε
+                    int count = 0;
+                    for (Item itemToCount : inv) {
+                        if (itemToCount.getName().equals(itemName)) {
+                            count++;
+                        }
+                    }
+
+                    // 2. Τυπώνουμε ΜΙΑ φορά
+                    System.out.printf("  - %-18s %s[x%d]%s | %s\n",
+                            itemName, GREEN, count, RESET, currentItem.getDescription());
+
+                    // 3. Γράφουμε στο "λευκό χαρτί"
+                    printedNames.add(itemName);
+                }
+            }
+        } // <-- ΕΔΩ ΚΛΕΙΝΕΙ ΤΟ else! Τελειώσαμε με το σακίδιο.
+
+        // 4. ΑΥΤΟ ΤΟ ΚΟΜΜΑΤΙ ΠΑΕΙ ΕΞΩ ΑΠΟ ΟΛΑ! Τυπώνεται πάντα μία φορά στο τέλος.
+        System.out.println(CYAN + "\n=============================================================" + RESET);
+        System.out.println(" 1. [↩️ ΕΠΙΣΤΡΟΦΗ ΣΤΗΝ ΠΟΛΗ]");
+        System.out.print("➤ Επιλογή: ");
+    }
+
 
     /**
      * Εμφανιζει το shop menu - μονο print
@@ -187,12 +237,12 @@ public class GameManager {
                   ITEM                    PRICE      Inventory   STATS
                   ──────────────────────────────────────────────────────
                   1. Health Potion           %d💲     📦 x%d    +50 HP
-                  2. Level-up Potion         100💲    📦 x0     +1 LVL
+                  2. Level-up Potion         %d💲    📦 x0     +25 XP
                   3. Mana Potion             150💲    📦 x0     +30 MP
                   ──────────────────────────────────────────────────────
                   4. [Back To Town]
                 ═══════════════════════════════════════════════════════════════
-                \s""".formatted(player.getWallet(), player.getHealth(), player.getLevel(), shop.getHealthPotionCost(), player.healthpotions);
+                \s""".formatted(player.getWallet(), player.getHealth(), player.getLevel(), shop.getHealthPotionCost(), player.getInventory().size(),shop.getXpPotionCost());
 
         System.out.println(ui);
         if (!shopMessage.isEmpty()) {
@@ -304,7 +354,7 @@ public class GameManager {
                         =============================================================
                         ➤ Επιλογή:\s""",
                 CYAN, RESET, CYAN, RESET,
-                RED, player.getHealth(), RESET, GREEN, player.getPower(), RESET, CYAN, player.healthpotions, RESET,
+                RED, player.getHealth(), RESET, GREEN, player.getPower(), RESET, CYAN, player.getInventory().size(), RESET,
                 CYAN, "TARGET", "HEALTH", "POWER", RESET,
                 "👤 YOU", player.getHealth(), player.getPower(),
                 RED, "👹 GOBLIN", goblin.getHp(), goblin.getPower(), RESET,
@@ -329,6 +379,7 @@ public class GameManager {
                 currectState = GameState.BANK;
                 break;
             case 2:
+                currectState = GameState.INVENTORY;
                 break;
             case 3:
                 currectState = GameState.SHOP;
@@ -368,6 +419,18 @@ public class GameManager {
         }
     }
 
+    private void handleInventory() {
+        int choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                currectState = GameState.MAIN_MENU;
+                break;
+            default:
+                System.out.println("ΜΗ ΕΓΚΥΡΗ ΕΠΙΛΟΓΗ");
+        }
+    }
+
     private void handleShopMenu() {
         int choice = input.nextInt();
 
@@ -376,7 +439,7 @@ public class GameManager {
                 handleHealthPotion();
                 break;
             case 2:
-                handleLevelPotion();
+                handleXpPotion();
                 break;
             case 3:
                 currectState = GameState.MAIN_MENU;
@@ -472,15 +535,22 @@ public class GameManager {
             shopMessage = "Δεν έχεις αρκετά χρήματα για να αγοράσεις ένα Health Potion!";
         }
         else {
-            shopMessage = "Αγόρασες ένα Health Potion! Έχεις " + player.healthpotions + " στο inventory σου.";
+            shopMessage = "Αγόρασες ένα Health Potion! Έχεις " + player.getInventory() + " στο inventory σου.";
         }
 
     }
 
 
-    public void handleLevelPotion() {
-        player.levelUpPotion();
+    public void handleXpPotion() {
+        int result = shop.buyXpPotion();
 
+        if (result == -1) {
+            shopMessage = "Δεν έχεις αρκετά χρήματα";
+        }
+        else {
+            shopMessage = "ok bro nice";
+
+        }
     }
 
 

@@ -1,22 +1,34 @@
+import java.util.ArrayList;
 import java.util.Random;
+
 
 
 //CLASS ACCOUNT
 public class Player {
+    ArrayList<Item> inventory = new ArrayList<>();
+
     private Shop shop;
+
+    private int level = 1;
+    private int xp = 0;
     private int wallet = 0;
     private int health = 0;
     private int power = 0;
     private int healthPotionHp = 50;
+    private int XpPotion = 25;
+
     private static final int MAX_HEALTH = 100;
-    private int levelUpPotionCost = 200;
-    private int xp = 0;
-    private int level = 1;
-    int healthpotions = 0;
     private static int keys = 0;
     int xpForLevelUp = 100;
 
 
+
+
+
+    //Getter
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
     //Getter
     public int getXp() {
         return xp;
@@ -41,14 +53,7 @@ public class Player {
     public int getHealth() {
         return health;
     }
-    //Getter
-    public int getLevelUpPotionCost() {
-        return levelUpPotionCost;
-    }
-    //Getter
-    public int getHealthpotions() {
-        return healthpotions;
-    }
+
 
     //Setter
     public void setXp(int xp) {
@@ -75,18 +80,14 @@ public class Player {
         this.health = health;
     }
     //Setter
-    public void setLevelUpPotionCost(int newCost) {
-        this.levelUpPotionCost = newCost;
-    }
-    //Setter
-    public void setHealthpotions(int healthpotions) {
-        this.healthpotions = healthpotions;
-    }
-    //Setter
     public void setShop(Shop shop) {
         this.shop = shop;
     }
 
+
+    public void addItem(Item item) {
+        this.inventory.add(item);
+    }
 
 
     public void levelup() {
@@ -142,7 +143,7 @@ public class Player {
 
         if (depositamount <= this.wallet) {
             this.wallet -= depositamount;
-            funds.setFunds(depositamount);
+            funds.setFunds(funds.getFunds() + depositamount);
         } else {
             System.out.println("Μη έγκυρο ποσό!");
         }
@@ -152,28 +153,36 @@ public class Player {
 
 
 
-    //LEVEUP POTION METHOD!
-    public void levelUpPotion() {
+    public void useHealthPotions() {
+        // Ψάχνουμε να βρούμε αν υπάρχει φίλτρο στο inventory
+        for (int i = 0; i < inventory.size(); i++) {
+            Item item = inventory.get(i);
 
-        if (this.wallet < levelUpPotionCost) {
-            System.out.println("Δεν έχεις αρκετά χρήματα");
-            return;
+            // Αν το όνομα του αντικειμένου είναι Health Potion
+            if (item.getName().equals("Health Potion")) {
+                this.health = Math.min(this.health + healthPotionHp, MAX_HEALTH);
+                inventory.remove(i); // Το βγάζουμε από το σακίδιο (το ήπιαμε!)
+                System.out.println("🧪 Ήπιες ένα Health Potion! Έγινες καλά.");
+                return; // Σταματάμε το ψάξιμο, κάναμε τη δουλειά μας
+            }
         }
-            this.wallet -= levelUpPotionCost;
-            levelup();
 
+        // Αν τελειώσει το loop και δεν έχουμε βρει τίποτα:
+        System.out.println("❌ Δεν έχεις Health Potions στο σακίδιό σου!");
     }
 
 
-    public void useHealthPotions() {
+    public void useXpPotion() {
+        for (int i = 0; i < inventory.size(); i++) {
+            Item item = inventory.get(i);
 
-        if(healthpotions <= 0) {
-            System.out.println("Δεν έχεις φίλτρα");
-            return;
+            if(item.getName().equals("XP Potion")) {
+                this.xp += this.XpPotion;
+                inventory.remove(i);
+                return;
+            }
         }
 
-        this.health = Math.min(this.health + healthPotionHp, MAX_HEALTH);
-        healthpotions--;
 
     }
 
